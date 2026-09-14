@@ -1,0 +1,67 @@
+ATC.example({
+  rank: 9,
+  name: "gm2_02_056__adapted__404c92f9312b0177260b5a2d200f2744",
+  controller: "gm2",
+  messageId: "gm2_02_056",
+  text: "Topswiss four five seven eight contact marseille one two five decimal eight five au revoir.",
+  model: "adapted",
+  checkpoint: "33 updates",
+  referenceLimit: "6 s",
+  referenceCrop: "5.940 s",
+  referenceSourceId: "gm2_01_043",
+  cosine: 0.7152695726421705,
+  wer: 0.13333333333333333,
+  synthesized: {
+    clipId: "404c92f9312b0177260b5a2d200f2744",
+    durationSeconds: 5.14,
+    sampleRate: 24000,
+    generationSeed: "7297408902747462272",
+    panel: "Native evaluation",
+    utmos: 2.5996011892954507,
+    expected:
+      "topswiss four five seven eight contact marseille one two five decimal eight five au revoir",
+    hypothesis:
+      "top swiss four five seven eight contact marseille one two five decimal eight five au revoir",
+    substitutions: 1,
+    deletions: 0,
+    insertions: 1,
+    referenceTokens: 15,
+    trainingSeed: "155921",
+  },
+  genuine: {
+    durationSeconds: 4.458,
+    sampleRate: 32000,
+    session: "gm2_02",
+    wer: 0.26666666666666666,
+    utmos: 1.9765787919362385,
+    hypothesis:
+      "top swiss four five seven eight contact marseille one two five decimal eight five aurevoir",
+  },
+  reference: {
+    durationSeconds: 5.94,
+    sourceId: "gm2_01_043",
+  },
+  notes: "The transcript of this exact reference crop has not been verified.",
+  comparison: {
+    model: "base",
+    checkpoint: "Pretrained",
+    cosine: 0.6817714463017621,
+    wer: 0.3333333333333333,
+    synthesized: {
+      clipId: "f072d5fc5518dd53c0831192b98588ac",
+      durationSeconds: 5.5,
+      sampleRate: 24000,
+      generationSeed: "7297408902747462272",
+      panel: "Native evaluation",
+      utmos: 2.566046158472697,
+      expected:
+        "topswiss four five seven eight contact marseille one two five decimal eight five au revoir",
+      hypothesis:
+        "air top swiss four five seven eight contact marseille one two five decimal eight five ourra",
+      substitutions: 2,
+      deletions: 1,
+      insertions: 2,
+      referenceTokens: 15,
+    },
+  },
+});

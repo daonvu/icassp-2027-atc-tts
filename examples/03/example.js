@@ -1,0 +1,67 @@
+ATC.example({
+  rank: 3,
+  name: "gf1_01_028__adapted__3a325cbd446370c2e8ea551d1b808819",
+  controller: "gf1",
+  messageId: "gf1_01_028",
+  text: "Bonjour viva nine zero eight one identified cleared ah kines st prex willisau flight level three four zero.",
+  model: "adapted",
+  checkpoint: "33 updates",
+  referenceLimit: "6 s",
+  referenceCrop: "6.000 s",
+  referenceSourceId: "gf1_01_077",
+  cosine: 0.7884501171667334,
+  wer: 0.3333333333333333,
+  synthesized: {
+    clipId: "3a325cbd446370c2e8ea551d1b808819",
+    durationSeconds: 5.96,
+    sampleRate: 24000,
+    generationSeed: "5946927043713949482",
+    panel: "Native evaluation",
+    utmos: 2.995469570159912,
+    expected:
+      "bonjour viva nine zero eight one identified cleared ah kines st prex willisau flight level three four zero",
+    hypothesis:
+      "ojul viva nine zero eight one identified cleared akines bex vidi so flight level three four zero",
+    substitutions: 5,
+    deletions: 1,
+    insertions: 0,
+    referenceTokens: 18,
+    trainingSeed: "104729",
+  },
+  genuine: {
+    durationSeconds: 6.007125,
+    sampleRate: 32000,
+    session: "gf1_01",
+    wer: 0.2777777777777778,
+    utmos: 1.5791714191436768,
+    hypothesis:
+      "bonjour viva nine zero eight one identified cleared quines sans previs l'isard flight level three four zero",
+  },
+  reference: {
+    durationSeconds: 6.0,
+    sourceId: "gf1_01_077",
+  },
+  notes: "The transcript of this exact reference crop has not been verified.",
+  comparison: {
+    model: "base",
+    checkpoint: "Pretrained",
+    cosine: 0.7442142315121625,
+    wer: 0.3333333333333333,
+    synthesized: {
+      clipId: "b54a74c0bd0e467cbf55c9d80e3d8191",
+      durationSeconds: 6.32,
+      sampleRate: 24000,
+      generationSeed: "5946927043713949482",
+      panel: "Native evaluation",
+      utmos: 2.779057582219442,
+      expected:
+        "bonjour viva nine zero eight one identified cleared ah kines st prex willisau flight level three four zero",
+      hypothesis:
+        "montjo viva nine zero eight one identified cleared arc in express willy sao flight level three four zero",
+      substitutions: 6,
+      deletions: 0,
+      insertions: 0,
+      referenceTokens: 18,
+    },
+  },
+});

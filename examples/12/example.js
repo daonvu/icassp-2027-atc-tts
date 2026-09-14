@@ -1,0 +1,67 @@
+ATC.example({
+  rank: 12,
+  name: "zf3_02_114__adapted__034b4eb21387c80b7de5be76edcbbe8d",
+  controller: "zf3",
+  messageId: "zf3_02_114",
+  text: "Alitalia four one six continue heading three six zero i'll call you back for navigation.",
+  model: "adapted",
+  checkpoint: "33 updates",
+  referenceLimit: "6 s",
+  referenceCrop: "5.940 s",
+  referenceSourceId: "zf3_01_167",
+  cosine: 0.6798632102960859,
+  wer: 0.0,
+  synthesized: {
+    clipId: "034b4eb21387c80b7de5be76edcbbe8d",
+    durationSeconds: 4.3,
+    sampleRate: 24000,
+    generationSeed: "1609284588852902944",
+    panel: "Native evaluation",
+    utmos: 3.265176296234131,
+    expected:
+      "alitalia four one six continue heading three six zero i'll call you back for navigation",
+    hypothesis:
+      "alitalia four one six continue heading three six zero i'll call you back for navigation",
+    substitutions: 0,
+    deletions: 0,
+    insertions: 0,
+    referenceTokens: 15,
+    trainingSeed: "104729",
+  },
+  genuine: {
+    durationSeconds: 5.5828125,
+    sampleRate: 32000,
+    session: "zf3_02",
+    wer: 0.06666666666666667,
+    utmos: 2.534318765004476,
+    hypothesis:
+      "alitalia four one six continue heading three six zero i call you back for navigation",
+  },
+  reference: {
+    durationSeconds: 5.94,
+    sourceId: "zf3_01_167",
+  },
+  notes: "The transcript of this exact reference crop has not been verified.",
+  comparison: {
+    model: "base",
+    checkpoint: "Pretrained",
+    cosine: 0.6478572792422697,
+    wer: 0.0,
+    synthesized: {
+      clipId: "ed6c755dbabc37be2708f567cdd1e73e",
+      durationSeconds: 4.74,
+      sampleRate: 24000,
+      generationSeed: "1609284588852902944",
+      panel: "Native evaluation",
+      utmos: 3.3250788847605386,
+      expected:
+        "alitalia four one six continue heading three six zero i'll call you back for navigation",
+      hypothesis:
+        "alitalia four one six continue heading three six zero i'll call you back for navigation",
+      substitutions: 0,
+      deletions: 0,
+      insertions: 0,
+      referenceTokens: 15,
+    },
+  },
+});

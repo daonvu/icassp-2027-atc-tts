@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Threat Model | ATC Speech Synthesis and Security</title>
+    <meta
+      name="description"
+      content="Audio and results for Air Traffic Control Speech Synthesis with Model Fine-Tuning and Its Security Implications, by Dao Vu and Peng Wei."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/site.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%237a5a48'/%3E%3Cpath d='M6 17h3l2-6 3 12 3-10 2 6 2-3h5' fill='none' stroke='%23fbeaec' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#top">Skip to content</a>
+
+    <header class="topbar">
+      <div class="wrap">
+        <a class="brand" href="index.html" aria-label="Home">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="9" fill="#7a5a48" />
+            <path
+              d="M6 17h3l2-6 3 12 3-10 2 6 2-3h5"
+              fill="none"
+              stroke="#fbeaec"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span>ATC TTS &amp; Security </span>
+        </a>
+        <nav class="nav" aria-label="Sections">
+          <a href="index.html">Overview</a>
+          <a href="threat.html" class="active" aria-current="page">Threat Model</a>
+          <a href="design.html">Study design</a>
+          <a href="listen.html">Listen</a>
+          <a href="findings.html">Findings</a>
+
+          <a href="references.html">References</a>
+          <button class="pdf" type="button" data-paper-status aria-haspopup="dialog">
+            Paper PDF
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top" tabindex="-1">
+      <section class="block" id="threat">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="kicker">02 · Threat model</span>
+            <h1>Threat model</h1>
+            <p class="intro">
+              ATC depends on correctly understood instructions from authorized sources. Legacy
+              analog VHF voice carries no cryptographic source authentication, so the credibility of
+              a transmission rests on phraseology, context, voice and the procedural checks around
+              it.
+            </p>
+          </div>
+          <div class="two-col">
+            <figure class="fig-frame">
+              <img
+                src="figures/brief_credibility.png"
+                alt="Conceptual ATC threat scenario. Step 1: earlier, the ATC controller says ‘[Call sign], descend and maintain five thousand.’ Step 2: later, an unauthorized synthetic-speech source says ‘[Call sign], descend and maintain four thousand.’ Pilot readback and the controller’s check give a chance of detection and correction. A schematic shows Aircraft A at 5,000 feet on the authorized path, and a dashed trajectory descending toward Aircraft B at 4,000 feet if the false instruction is accepted before correction."
+                width="977"
+                height="737"
+              />
+              <figcaption class="caption">
+                <strong>Figure 1 from the paper.</strong> Conceptual ATC threat scenario. A later
+                unauthorized deepfake message changes the requested altitude from 5,000 to 4,000
+                feet. The dashed trajectory assumes acceptance and action before correction. Pilot
+                readback to the legitimate controller provides an opportunity for detection.
+                Aircraft positions are schematic, and a traffic conflict may occur depending on
+                geometry and timing.
+              </figcaption>
+            </figure>
+            <div class="prose">
+              <h3>Documented incidents</h3>
+              <ul class="tight">
+                <li>
+                  <strong>Tenerife, 1977.</strong> The KLM aircraft began takeoff without clearance;
+                  overlapping radio transmissions and inadequate language were among the
+                  contributing factors in the 583-fatality collision.
+                </li>
+                <li>
+                  <strong>Roanoke, 1993.</strong> An individual impersonating an air traffic
+                  controller issued false flight instructions that one pilot began to follow, before
+                  legitimate controllers corrected the misinformation.
+                </li>
+                <li>
+                  <strong>Melbourne, 2016.</strong> A Boeing 737 crew received an unauthorized
+                  go-around instruction at about 200 feet and initiated the maneuver, judging that
+                  questioning it could add confusion. The controller denied issuing it as the
+                  maneuver began; the aircraft landed safely. The incident does not establish the
+                  use of voice deepfakes.
+                </li>
+              </ul>
+              <h3>Adversary assumptions</h3>
+              <p>
+                The scenario assumes access to a controller recording, a public TTS system, traffic
+                context, and a means of transmitting an unauthorized VHF message. The false
+                instruction in Figure 1 follows FAA altitude phraseology and takes the form of an
+                amended clearance, which is part of normal operations.
+              </p>
+              <p>
+                A stronger adversary assumption is repeated access to intelligible recordings of an
+                on-duty controller’s exchanges with aircraft over multiple shifts. Such access could
+                provide a wider choice of complete utterances and more context for voice, cadence,
+                and prosody. The brief excerpts used in this study do not model that collection
+                scenario. Improved spoof credibility under those conditions remains untested here.
+              </p>
+              <h3>Operational defenses</h3>
+              <p>
+                The FAA requires acknowledgment of instructions and checking of items read back; its
+                false-communication procedure calls for correcting information and alerting affected
+                aircraft. FAA guidance also recommends altitude readback for mutual verification. In
+                Melbourne, the investigation found minimal overall operational impact from the
+                unlawful broadcasts.
+              </p>
+              <div class="note info">
+                <strong>Evaluation scope.</strong> The study evaluates speech generation on
+                unchanged corpus transcripts. Pilot acceptance, aircraft response, over-the-air
+                transmission and correction timing are outside the evaluation. The measured voice
+                and delivery features characterize synthesis, not successful spoofing.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <div>
+          <strong style="color: #fff"
+            >Air Traffic Control Speech Synthesis with Model Fine-Tuning and Its Security
+            Implications</strong
+          >
+          · Dao Vu and Peng Wei · George Washington University
+        </div>
+        <div>
+          Audio on this page is for listening only and is not distributed for reuse. Synthesized
+          outputs retain the model’s watermark. The study did not test pilot acceptance or
+          operational spoofing success.
+        </div>
+      </div>
+    </footer>
+
+    <script src="data/site-data.js"></script>
+    <script src="assets/site.js"></script>
+  </body>
+</html>

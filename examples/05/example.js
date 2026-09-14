@@ -1,0 +1,67 @@
+ATC.example({
+  rank: 5,
+  name: "gf1_01_138__adapted__eea363f2cdcf77f2cb5703db117cb1d5",
+  controller: "gf1",
+  messageId: "gf1_01_138",
+  text: "Bonjour l t u seven seven five six call you back break air portugal four one one three climb to flight level three six zero.",
+  model: "adapted",
+  checkpoint: "33 updates",
+  referenceLimit: "6 s",
+  referenceCrop: "6.000 s",
+  referenceSourceId: "gf1_01_077",
+  cosine: 0.7258530674675583,
+  wer: 0.12,
+  synthesized: {
+    clipId: "eea363f2cdcf77f2cb5703db117cb1d5",
+    durationSeconds: 6.56,
+    sampleRate: 24000,
+    generationSeed: "2874686884378863990",
+    panel: "Native evaluation",
+    utmos: 2.8462277253468833,
+    expected:
+      "bonjour l t u seven seven five six call you back break air portugal four one one three climb to flight level three six zero",
+    hypothesis:
+      "bonjour le tu seven seven five six call you back break air portugal four one one three climb to flight level three six zero",
+    substitutions: 2,
+    deletions: 1,
+    insertions: 0,
+    referenceTokens: 25,
+    trainingSeed: "155921",
+  },
+  genuine: {
+    durationSeconds: 6.6238125,
+    sampleRate: 32000,
+    session: "gf1_01",
+    wer: 0.12,
+    utmos: 1.8213553428649902,
+    hypothesis:
+      "bonjour ltu seven seven five six call you back break air portugal four one one three climb to flight level three six zero",
+  },
+  reference: {
+    durationSeconds: 6.0,
+    sourceId: "gf1_01_077",
+  },
+  notes: "The transcript of this exact reference crop has not been verified.",
+  comparison: {
+    model: "base",
+    checkpoint: "Pretrained",
+    cosine: 0.7625548781743998,
+    wer: 0.08,
+    synthesized: {
+      clipId: "2f0d2f0d8fc61644a599a16a9540f131",
+      durationSeconds: 9.08,
+      sampleRate: 24000,
+      generationSeed: "2874686884378863990",
+      panel: "Native evaluation",
+      utmos: 3.0930236180623374,
+      expected:
+        "bonjour l t u seven seven five six call you back break air portugal four one one three climb to flight level three six zero",
+      hypothesis:
+        "bonjour lutti u seven seven five six call you back break air portugal four one one three climb to flight level three six zero",
+      substitutions: 1,
+      deletions: 1,
+      insertions: 0,
+      referenceTokens: 25,
+    },
+  },
+});

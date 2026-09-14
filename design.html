@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Study design | ATC Speech Synthesis and Security</title>
+    <meta
+      name="description"
+      content="Audio and results for Air Traffic Control Speech Synthesis with Model Fine-Tuning and Its Security Implications, by Dao Vu and Peng Wei."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/site.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%237a5a48'/%3E%3Cpath d='M6 17h3l2-6 3 12 3-10 2 6 2-3h5' fill='none' stroke='%23fbeaec' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#top">Skip to content</a>
+
+    <header class="topbar">
+      <div class="wrap">
+        <a class="brand" href="index.html" aria-label="Home">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="9" fill="#7a5a48" />
+            <path
+              d="M6 17h3l2-6 3 12 3-10 2 6 2-3h5"
+              fill="none"
+              stroke="#fbeaec"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span>ATC TTS &amp; Security </span>
+        </a>
+        <nav class="nav" aria-label="Sections">
+          <a href="index.html">Overview</a>
+          <a href="threat.html">Threat Model</a>
+          <a href="design.html" class="active" aria-current="page">Study design</a>
+          <a href="listen.html">Listen</a>
+          <a href="findings.html">Findings</a>
+
+          <a href="references.html">References</a>
+          <button class="pdf" type="button" data-paper-status aria-haspopup="dialog">
+            Paper PDF
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top" tabindex="-1">
+      <section class="block" id="design">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="kicker">03 · Study design</span>
+            <h1>Study design</h1>
+            <p class="intro">
+              Each native low-rank adaptation (LoRA) model is fine-tuned on controllers other than
+              the evaluation speaker. Base and adapted models then generate the same messages with
+              identical conditioning audio and generation seeds, and an ATC speech recognizer
+              measures word recovery.
+            </p>
+          </div>
+          <figure class="fig-frame" style="margin-bottom: 22px">
+            <img
+              src="figures/workflow.png"
+              alt="Study design diagram in four stages. 1 Data: ATCOSIM microphone-side controller speech supplies adaptation data with the target controller held out, plus native references; ATCO2 supplies received-radio references. 2 Adaptation: pretrained Chatterbox, with LoRA on the T3 predictor and the encoder and decoder frozen, yields ATC-adapted Chatterbox. 3 Paired synthesis: text, reference and seed are held fixed per pair; reference conditions vary native or received-radio audio and reference duration limits. 4 Evaluation: ASR word recovery, timing and pauses, speaker resemblance and pitch, predicted quality, with delta equal to adapted minus base paired comparisons."
+              width="2019"
+              height="532"
+            />
+            <figcaption class="caption">
+              <strong>Figure 2 from the paper.</strong> ATCOSIM supplies recordings for TTS
+              fine-tuning, audio samples for voice conditioning, and held-out speech and transcripts
+              for evaluation. A separate comparison uses received-radio recordings from ATCO2 for
+              voice conditioning while retaining ATCOSIM message text. Paired differences are
+              <math
+                xmlns="http://www.w3.org/1998/Math/MathML"
+                aria-label="Delta equals adapted minus base"
+                ><mi>Δ</mi><mo>=</mo><msub><mi>x</mi><mtext>adapted</mtext></msub
+                ><mo>−</mo><msub><mi>x</mi><mtext>base</mtext></msub></math
+              >.
+            </figcaption>
+          </figure>
+
+          <div class="steps" style="margin-bottom: 22px">
+            <div class="step" data-tone="data">
+              <h4>Data and controller separation</h4>
+              <p>
+                ATCOSIM: non-prompted speech recorded at controller headset microphones during
+                real-time simulations. 9 of its 10 controllers contribute 90 development, 180
+                validation and 270 evaluation utterances.
+              </p>
+              <ul>
+                <li>Screening yields 5,881 training recordings (6.39 h).</li>
+                <li>Each native fit excludes every recording of the evaluation controller.</li>
+                <li>
+                  Two references per controller, cropped at reviewed word boundaries within 2-, 4-
+                  and 6-s limits; a separate 8-s comparison covers 5 controllers.
+                </li>
+                <li>
+                  Received-radio conditioning: 10 controller-labeled ATCO2 recordings × 5 ATCOSIM
+                  texts.
+                </li>
+              </ul>
+            </div>
+            <div class="step" data-tone="adapt">
+              <h4>Model adaptation</h4>
+              <p>
+                LoRA on the 120 attention projections of Chatterbox’s T3 speech-token predictor. The
+                pretrained weights, speaker encoder and S3Gen waveform decoder stay fixed.
+              </p>
+              <ul>
+                <li>Rank 16, α = 32, dropout 0.05: 3,932,160 trainable parameters.</li>
+                <li>Token-normalized cross-entropy over speech and end-of-sequence tokens.</li>
+                <li>
+                  AdamW, batches of 20; learning rate warms linearly to 5×10⁻⁵ at update 33, then
+                  constant.
+                </li>
+                <li>
+                  Selected dose: 33 updates (660 distinct utterances per fit), fixed before
+                  confirmation across 3 training seeds.
+                </li>
+              </ul>
+            </div>
+            <div class="step" data-tone="synth">
+              <h4>Paired synthesis</h4>
+              <p>
+                For each message and reference limit, the 2 references yield 2 base outputs and 6
+                adapted outputs (3 training seeds). A message-specific seed is reset before each
+                output and shared across conditions.
+              </p>
+              <ul>
+                <li>
+                  Chatterbox public defaults held fixed: temperature 0.8, classifier-free guidance
+                  0.5, exaggeration 0.5, repetition penalty 1.2, min-p 0.05, top-p 1.0, 1,000-token
+                  cap, 10 flow-matching steps.
+                </li>
+                <li>Outputs are 24 kHz and retain the model’s watermarking.</li>
+              </ul>
+            </div>
+            <div class="step" data-tone="eval">
+              <h4>Evaluation and inference</h4>
+              <p>
+                Outputs are averaged within messages, then within controllers, with equal controller
+                weights. Conditional 95% intervals use 2,000 paired within-controller message
+                bootstrap resamples.
+              </p>
+              <ul>
+                <li>
+                  Primary criterion: upper bounds U<sub>D</sub> &lt; 0 for the duration-error change
+                  and U<sub>W</sub> &lt; 0.01 for the WER change.
+                </li>
+                <li>
+                  Secondary: pause fraction, envelope distance (2–12 Hz), pYIN pitch
+                  median/range/slope, ECAPA-TDNN cosine, UTMOSv2, SCOREQ.
+                </li>
+                <li>Secondary intervals are unadjusted for multiple comparisons.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Why 33 updates? Development checkpoint selection</h3>
+            <p class="prose" style="color: var(--ink-2)">
+              Before confirmation, checkpoints at 16, 33, 66, 132, 264 and 528 updates were
+              evaluated on the 90 held-out development messages under the first training seed. A
+              checkpoint was eligible if it had complete measurements, reduced mean duration error
+              (upper bound below 0) and a WER upper bound below the 1-pp tolerance. Among eligible
+              checkpoints, the one with the lowest duration error was chosen. Longer fits improve
+              development duration error further but fail the WER condition. Hover or focus the
+              marks for exact values.
+            </p>
+            <div class="chart-row">
+              <div class="chart" id="chart-ckpt-dur"></div>
+              <div class="chart" id="chart-ckpt-wer"></div>
+              <div class="chart" id="chart-loss"></div>
+            </div>
+            <div class="legend">
+              <span class="key"
+                ><span class="sw dot adapted"></span> selected checkpoint (33 updates)</span
+              ><span class="key"
+                ><span class="sw dot" style="background: #3f4a5e"></span> eligible</span
+              ><span class="key"
+                ><span class="sw dot" style="background: #a8a49b"></span> not eligible</span
+              ><span class="key"
+                ><span class="sw line base"></span> mean training loss over folds (seed
+                104729)</span
+              ><span class="key"
+                ><span class="sw dot hollow" style="border-color: #2b5aa6"></span> validation
+                loss</span
+              >
+            </div>
+            <p class="caption">
+              Development selection used the first seed only; confirmation then re-trained the
+              33-update adapter with three seeds (104729, 130363, 155921). Validation loss did not
+              select checkpoints.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <div>
+          <strong style="color: #fff"
+            >Air Traffic Control Speech Synthesis with Model Fine-Tuning and Its Security
+            Implications</strong
+          >
+          · Dao Vu and Peng Wei · George Washington University
+        </div>
+        <div>
+          Audio on this page is for listening only and is not distributed for reuse. Synthesized
+          outputs retain the model’s watermark. The study did not test pilot acceptance or
+          operational spoofing success.
+        </div>
+      </div>
+    </footer>
+
+    <script src="data/site-data.js"></script>
+    <script src="assets/site.js"></script>
+  </body>
+</html>

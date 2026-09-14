@@ -1,0 +1,67 @@
+ATC.example({
+  rank: 11,
+  name: "gm2_02_052__adapted__ce3bfe7f98e8a5dd01603be0607c39a3",
+  controller: "gm2",
+  messageId: "gm2_02_052",
+  text: "Belgian airforce three three four bonjour identified cleared direct arbos then epinal flight level three two zero.",
+  model: "adapted",
+  checkpoint: "33 updates",
+  referenceLimit: "6 s",
+  referenceCrop: "5.980 s",
+  referenceSourceId: "gm2_01_140",
+  cosine: 0.7113869967223322,
+  wer: 0.23529411764705882,
+  synthesized: {
+    clipId: "ce3bfe7f98e8a5dd01603be0607c39a3",
+    durationSeconds: 5.9,
+    sampleRate: 24000,
+    generationSeed: "6316651849614639010",
+    panel: "Native evaluation",
+    utmos: 2.1676949659983316,
+    expected:
+      "belgian airforce three three four bonjour identified cleared direct arbos then epinal flight level three two zero",
+    hypothesis:
+      "belgian air force three two four bonjour identified cleared direct arbros then epinal flight level three two zero",
+    substitutions: 3,
+    deletions: 0,
+    insertions: 1,
+    referenceTokens: 17,
+    trainingSeed: "155921",
+  },
+  genuine: {
+    durationSeconds: 5.1990625,
+    sampleRate: 32000,
+    session: "gm2_02",
+    wer: 0.29411764705882354,
+    utmos: 1.3917561372121174,
+    hypothesis:
+      "belgium air force three three four bonjour identify cleared direct arabos then epinal flight level three two zero",
+  },
+  reference: {
+    durationSeconds: 5.98,
+    sourceId: "gm2_01_140",
+  },
+  notes: "The transcript of this exact reference crop has not been verified.",
+  comparison: {
+    model: "base",
+    checkpoint: "Pretrained",
+    cosine: 0.6310559120551984,
+    wer: 0.11764705882352941,
+    synthesized: {
+      clipId: "9d561dfc21d4f8638eed88fded180641",
+      durationSeconds: 6.46,
+      sampleRate: 24000,
+      generationSeed: "6316651849614639010",
+      panel: "Native evaluation",
+      utmos: 2.569892326990763,
+      expected:
+        "belgian airforce three three four bonjour identified cleared direct arbos then epinal flight level three two zero",
+      hypothesis:
+        "belgian air force three three four bonjour identified cleared direct arbos then epinal flight level three two zero",
+      substitutions: 1,
+      deletions: 0,
+      insertions: 1,
+      referenceTokens: 17,
+    },
+  },
+});

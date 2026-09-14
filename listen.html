@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Listen | ATC Speech Synthesis and Security</title>
+    <meta
+      name="description"
+      content="Audio and results for Air Traffic Control Speech Synthesis with Model Fine-Tuning and Its Security Implications, by Dao Vu and Peng Wei."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/site.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%237a5a48'/%3E%3Cpath d='M6 17h3l2-6 3 12 3-10 2 6 2-3h5' fill='none' stroke='%23fbeaec' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#top">Skip to content</a>
+
+    <header class="topbar">
+      <div class="wrap">
+        <a class="brand" href="index.html" aria-label="Home">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="9" fill="#7a5a48" />
+            <path
+              d="M6 17h3l2-6 3 12 3-10 2 6 2-3h5"
+              fill="none"
+              stroke="#fbeaec"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span>ATC TTS &amp; Security </span>
+        </a>
+        <nav class="nav" aria-label="Sections">
+          <a href="index.html">Overview</a>
+          <a href="threat.html">Threat Model</a>
+          <a href="design.html">Study design</a>
+          <a href="listen.html" class="active" aria-current="page">Listen</a>
+          <a href="findings.html">Findings</a>
+
+          <a href="references.html">References</a>
+          <button class="pdf" type="button" data-paper-status aria-haspopup="dialog">
+            Paper PDF
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top" tabindex="-1">
+      <section class="block" id="listen">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="kicker">04 · Listen</span>
+            <h1>Compare base and adapted speech</h1>
+            <p class="intro">
+              Choose a sample to compare base and adapted synthesis side by side. Both models use
+              the same inference text and reference recording. The author-selected recording is
+              marked.
+            </p>
+          </div>
+          <div class="listen-tools">
+            <label for="sample-select">Choose a sample</label>
+            <select class="select" id="sample-select" aria-label="Choose a sample"></select>
+            <button class="btn btn-outline" id="sample-previous" type="button">Previous</button>
+            <button class="btn btn-outline" id="sample-next" type="button">Next</button>
+            <span class="spacer"></span>
+            <span id="listen-count" role="status"></span>
+          </div>
+          <p id="listen-status" role="status"></p>
+          <div class="strip-list" id="strip-list" aria-live="polite"></div>
+
+          <div class="note info selection-note" id="listen-note"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <div>
+          <strong style="color: #fff"
+            >Air Traffic Control Speech Synthesis with Model Fine-Tuning and Its Security
+            Implications</strong
+          >
+          · Dao Vu and Peng Wei · George Washington University
+        </div>
+        <div>
+          Audio on this page is for listening only and is not distributed for reuse. Synthesized
+          outputs retain the model’s watermark. The study did not test pilot acceptance or
+          operational spoofing success.
+        </div>
+      </div>
+    </footer>
+
+    <script src="data/site-data.js"></script>
+    <script src="examples/index.js"></script>
+    <script src="assets/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,67 @@
+ATC.example({
+  rank: 4,
+  name: "gm2_02_056__adapted__011c461e6b7c7c7438e450903cf40e45",
+  controller: "gm2",
+  messageId: "gm2_02_056",
+  text: "Topswiss four five seven eight contact marseille one two five decimal eight five au revoir.",
+  model: "adapted",
+  checkpoint: "33 updates",
+  referenceLimit: "4 s",
+  referenceCrop: "3.860 s",
+  referenceSourceId: "gm2_01_043",
+  cosine: 0.7684347103725039,
+  wer: 0.13333333333333333,
+  synthesized: {
+    clipId: "011c461e6b7c7c7438e450903cf40e45",
+    durationSeconds: 4.38,
+    sampleRate: 24000,
+    generationSeed: "7297408902747462272",
+    panel: "Native evaluation",
+    utmos: 2.2218746344248452,
+    expected:
+      "topswiss four five seven eight contact marseille one two five decimal eight five au revoir",
+    hypothesis:
+      "top swiss four five seven eight contact marseille one two five decimal eight five au revoir",
+    substitutions: 1,
+    deletions: 0,
+    insertions: 1,
+    referenceTokens: 15,
+    trainingSeed: "155921",
+  },
+  genuine: {
+    durationSeconds: 4.458,
+    sampleRate: 32000,
+    session: "gm2_02",
+    wer: 0.26666666666666666,
+    utmos: 1.9765787919362385,
+    hypothesis:
+      "top swiss four five seven eight contact marseille one two five decimal eight five aurevoir",
+  },
+  reference: {
+    durationSeconds: 3.86,
+    sourceId: "gm2_01_043",
+  },
+  notes: "The transcript of this exact reference crop has not been verified.",
+  comparison: {
+    model: "base",
+    checkpoint: "Pretrained",
+    cosine: 0.6380547032205808,
+    wer: 0.26666666666666666,
+    synthesized: {
+      clipId: "b736c5704820f39840df11ca85765b1e",
+      durationSeconds: 5.1,
+      sampleRate: 24000,
+      generationSeed: "7297408902747462272",
+      panel: "Native evaluation",
+      utmos: 2.9354248046875,
+      expected:
+        "topswiss four five seven eight contact marseille one two five decimal eight five au revoir",
+      hypothesis:
+        "rap swiss four five seven eight contact marseille one two five decimal eight five aurevoir",
+      substitutions: 2,
+      deletions: 1,
+      insertions: 1,
+      referenceTokens: 15,
+    },
+  },
+});

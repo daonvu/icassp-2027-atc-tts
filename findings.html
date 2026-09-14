@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Findings | ATC Speech Synthesis and Security</title>
+    <meta
+      name="description"
+      content="Audio and results for Air Traffic Control Speech Synthesis with Model Fine-Tuning and Its Security Implications, by Dao Vu and Peng Wei."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/site.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%237a5a48'/%3E%3Cpath d='M6 17h3l2-6 3 12 3-10 2 6 2-3h5' fill='none' stroke='%23fbeaec' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#top">Skip to content</a>
+
+    <header class="topbar">
+      <div class="wrap">
+        <a class="brand" href="index.html" aria-label="Home">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="9" fill="#7a5a48" />
+            <path
+              d="M6 17h3l2-6 3 12 3-10 2 6 2-3h5"
+              fill="none"
+              stroke="#fbeaec"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span>ATC TTS &amp; Security </span>
+        </a>
+        <nav class="nav" aria-label="Sections">
+          <a href="index.html">Overview</a>
+          <a href="threat.html">Threat Model</a>
+          <a href="design.html">Study design</a>
+          <a href="listen.html">Listen</a>
+          <a href="findings.html" class="active" aria-current="page">Findings</a>
+
+          <a href="references.html">References</a>
+          <button class="pdf" type="button" data-paper-status aria-haspopup="dialog">
+            Paper PDF
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top" tabindex="-1">
+      <section class="block" id="findings">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="kicker">05 · Findings</span>
+            <h1>Results and security implications</h1>
+            <p class="intro">
+              Results use equal controller weights and conditional 95% intervals. Bold entries mark
+              the better point estimate. Dark intervals exclude zero. Hover or focus a chart mark
+              for its values.
+            </p>
+          </div>
+
+          <aside class="study-context" aria-labelledby="reference-context-title">
+            <h2 id="reference-context-title">Brief references, limited context</h2>
+            <p>
+              This study tests <a href="design.html">brief, word-boundary crops</a> that may end
+              before a sentence is complete. They provide limited context for a controller’s voice,
+              prosody, and cadence. With Chatterbox’s inference controls held fixed, pacing and
+              prosody remained inconsistent. Fine-tuning gave no consistent delivery advantage.
+              Tuning the inference controls would be a separate intervention.
+            </p>
+            <p>
+              The
+              <a href="https://ieeexplore.ieee.org/document/11570606">ICNS 2026 paper</a>
+              notes that longer references typically improve speaker embeddings and identity
+              conditioning. It also identifies pitch and cadence matching as persistent limitations.
+            </p>
+            <p>
+              A
+              <a href="threat.html"
+                >stronger adversary with intelligible recordings from multiple controller shifts</a
+              >
+              could have fuller utterances to choose from. Optimizing spoof quality with that richer
+              reference material, or testing its credibility to listeners, is outside this study’s
+              scope.
+            </p>
+          </aside>
+
+          <div class="card" id="primary">
+            <h3>Native comparison at 6-s reference limits (Table 1)</h3>
+            <p class="prose" style="color: var(--ink-2)">
+              270 messages with common measurement support, except pitch (162). Arrows indicate the
+              preferred direction. Primary outcomes appear above the rule. The joint criterion
+              required the duration-error upper bound below 0 and the WER upper bound below 1
+              percentage point; the WER interval reaches 1.410 pp, so the criterion is not met.
+              Because the intervals include zero, they also do not establish equivalence.
+            </p>
+            <div class="table-wrap">
+              <table class="data" id="tbl-primary">
+                <thead>
+                  <tr>
+                    <th>Measure</th>
+                    <th class="num">Base</th>
+                    <th class="num">Adapted</th>
+                    <th class="num">Δ</th>
+                    <th>95% interval <span class="dir">(dashed = 1-pp WER tolerance)</span></th>
+                    <th class="num">n</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <p class="caption">
+              Recorded speech scores 17.597% WER and UTMOSv2 2.264 under the same recognizer and
+              predictor, compared with 14.491% and 2.749 for base synthesis. A second ATC recognizer
+              (wav2vec2 XLS-R fine-tuned on ATC audio) also leaves the tolerance unconfirmed:
+              25.726% base and 26.397% adapted WER, with a change interval that includes zero and
+              extends above tolerance. A word-count-weighted sensitivity analysis shows higher WER
+              after adaptation, without replacing the primary result.
+            </p>
+          </div>
+
+          <div class="card" id="reference-length" style="margin-top: 22px">
+            <h3>Off-the-shelf synthesis with brief references</h3>
+            <p class="prose" style="color: var(--ink-2)">
+              On the matched 90-message panel (10 messages per controller), base-model speaker
+              cosine rises as references lengthen while WER barely moves. Adaptation adds embedding
+              similarity only at the 2- and 4-s limits, and the adapted scores remain below base
+              synthesis at 6 s and, on the separate 50-message subset, at 8 s. At 2 s, adaptation
+              also raises WER by 1.488 pp and log-duration error by 0.022.
+            </p>
+            <div
+              class="chart-row"
+              style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr))"
+            >
+              <div class="chart" id="chart-reflen-cos"></div>
+              <div class="chart" id="chart-reflen-wer"></div>
+              <div class="chart" id="chart-refchg-cos"></div>
+              <div class="chart" id="chart-refchg-wer"></div>
+            </div>
+            <div class="legend">
+              <span class="key"><span class="sw line base"></span> base synthesis</span
+              ><span class="key"><span class="sw line adapted"></span> adapted synthesis</span
+              ><span class="key"
+                ><span class="sw dot hollow"></span> 8-s subset (50 messages, 5 controllers, one
+                reference each)</span
+              ><span class="key"
+                ><span class="sw dot" style="background: #14213d"></span> paired change whose
+                interval excludes 0</span
+              >
+            </div>
+            <details class="disclosure" style="margin-top: 12px">
+              <summary>Table view: levels by reference limit</summary>
+              <div class="inner">
+                <div class="table-wrap">
+                  <table class="data" id="tbl-reflen">
+                    <thead>
+                      <tr>
+                        <th>Limit</th>
+                        <th class="num">Mean actual reference</th>
+                        <th class="num">Messages / controllers</th>
+                        <th class="num">Base WER</th>
+                        <th class="num">Adapted WER</th>
+                        <th class="num">Base cosine</th>
+                        <th class="num">Adapted cosine</th>
+                        <th class="num">Base UTMOSv2</th>
+                        <th class="num">Adapted UTMOSv2</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <p class="caption">
+                  Reference limits characterize the tested samples, not a minimum acquisition time.
+                  Nested crops preserve original samples but vary duration and phonetic content
+                  together. The 8-s comparison keeps the 6-s speech prompt while speaker and
+                  waveform conditioning receive the longer crop.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="two-col" style="margin-top: 22px">
+            <div class="card" id="timing">
+              <h3>Duration and pauses</h3>
+              <p class="prose" style="color: var(--ink-2)">
+                Fine-tuning reduces mean output duration from 4.408 to 4.030 s (recorded speech
+                averages 4.269 s). Mean excess over the recorded duration falls from 0.537 to 0.328
+                s, while mean shortfall rises from 0.398 to 0.566 s. Shortening can improve overly
+                long outputs and worsen short ones. The decomposition below is descriptive.
+              </p>
+              <div class="chart" id="chart-timing"></div>
+              <div class="legend">
+                <span class="key"><span class="sw base"></span> base</span
+                ><span class="key"><span class="sw adapted"></span> adapted</span>
+              </div>
+              <p class="caption">
+                Energy activity uses 20-ms frames with 10-ms hops and a threshold 30 dB below the
+                95th-percentile frame energy; pauses require at least 15 inactive frames (about 140
+                ms). Regions are acoustic, without word alignment.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Pauses, pitch and predicted quality</h3>
+              <ul class="tight">
+                <li>
+                  <strong>Pause-fraction error</strong> changes by
+                  <math
+                    xmlns="http://www.w3.org/1998/Math/MathML"
+                    aria-label="Delta equals minus 0.0055"
+                    ><mi>Δ</mi><mo>=</mo><mo>−</mo><mn>0.0055</mn></math
+                  >
+                  across all 270 targets [−0.0098, −0.0014]. A descriptive split shows reduced error
+                  for the 174 targets without detected pauses and increased error for the other 96.
+                </li>
+                <li>
+                  <strong>Predicted naturalness (UTMOSv2)</strong> changes by −0.062 [−0.094,
+                  −0.029], indicating lower predicted naturalness. SCOREQ changes by −0.020 with an
+                  interval including zero.
+                </li>
+                <li>
+                  <strong>Pitch-slope error</strong> increases by 0.371 semitones per utterance
+                  [0.052, 0.689] on the 162-message subset with valid pYIN values in every compared
+                  condition. Pitch support is uneven: only 2 of 20 and 7 of 50 messages for two
+                  equally weighted controllers.
+                </li>
+                <li>
+                  <strong>Uncertain changes:</strong> envelope distance, pitch-median and
+                  pitch-range errors, 6-s speaker cosine and SCOREQ all have secondary intervals
+                  that include zero. The insufficient 2-s pitch-range support prevents that delivery
+                  comparison.
+                </li>
+              </ul>
+              <div class="note info" style="margin-top: 10px">
+                At 2 s, higher embedding similarity accompanied higher word and duration errors.
+                Greater speaker-embedding similarity can therefore coexist with poorer word recovery
+                and delivery.
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="speaker-context" style="margin-top: 22px">
+            <h3>
+              Speaker resemblance in context (Table 2 and the supporting exploratory analysis)
+            </h3>
+            <p class="prose" style="color: var(--ink-2)">
+              A cosine near 0.58 is hard to interpret alone. The paper therefore compares every
+              output with a separate bank of 90 genuine development recordings (10 per controller)
+              that overlap neither the evaluation recordings nor the inference prompts, although
+              they did participate in checkpoint selection. For both models, mean cosine is higher
+              for the intended controller than for other controllers, but lower than for genuine
+              same-controller speech. Against this bank, the 6-s adaptation change is uncertain at
+              −0.0013 [−0.0055, 0.0026].
+            </p>
+            <div class="two-col">
+              <div>
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead>
+                      <tr>
+                        <th>Query speech</th>
+                        <th class="num">Same controller</th>
+                        <th class="num">Other controllers</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><span class="badge genuine">Genuine</span></td>
+                        <td class="num">0.692</td>
+                        <td class="num">0.097</td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge base">Base TTS</span></td>
+                        <td class="num">0.559</td>
+                        <td class="num">0.095</td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge adapted">Adapted TTS</span></td>
+                        <td class="num">0.558</td>
+                        <td class="num">0.096</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="caption">
+                  Table 2 from the paper: exploratory mean speaker cosine against the 90-recording
+                  development bank. These reference comparisons differ from Table 1, whose cosine
+                  uses the matched target recording.
+                </p>
+                <div class="chart" id="chart-speaker-strips" style="margin-top: 12px"></div>
+                <p class="caption">
+                  Weighted pairwise distribution percentiles (5th–95th range, 25th–75th box, median
+                  tick), not confidence intervals or acceptance thresholds. Genuine same-controller
+                  pairs span about 0.52–0.82, so a universal requirement that same-speaker scores
+                  exceed 0.8 would mischaracterize much of this genuine ATC speech.
+                </p>
+              </div>
+              <div>
+                <div class="chart" id="chart-speaker-ctrl"></div>
+                <div class="legend">
+                  <span class="key"><span class="sw dot genuine"></span> genuine</span
+                  ><span class="key"><span class="sw dot base"></span> base</span
+                  ><span class="key"><span class="sw dot adapted"></span> adapted</span>
+                </div>
+                <p class="caption">
+                  In the supporting analysis, every one of the 270 genuine queries, 540 base outputs
+                  and 1,620 adapted outputs ranked its intended controller first among the nine bank
+                  controllers. That is a closed-set result among known controllers, not open-set
+                  verification, human voice matching or spoof success. These figures come from the
+                  exploratory speaker-similarity analysis that supports Table 2.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="radio" style="margin-top: 22px">
+            <h3>Received-radio reference conditioning</h3>
+            <p class="prose" style="color: var(--ink-2)">
+              Ten controller-labeled ATCO2 received-radio recordings from different session groups
+              each condition 5 ATCOSIM texts, at 2-, 4- and 6-s limits; the adapter here uses all 9
+              eligible ATCOSIM controllers. Cosine is measured against a fixed longest approved crop
+              of the radio reference, and generated outputs receive no radio-channel processing.
+              Only the 4-s cosine increase has an interval excluding zero. Because the comparison
+              changes corpus, adaptation population and similarity reference, its scores cannot rank
+              native and radio-conditioned voices directly.
+            </p>
+            <div class="table-wrap">
+              <table class="data" id="tbl-radio">
+                <thead>
+                  <tr>
+                    <th>Limit</th>
+                    <th class="num">Base cosine</th>
+                    <th class="num">Adapted cosine</th>
+                    <th class="num">Δ cosine [95% interval]</th>
+                    <th class="num">Base WER</th>
+                    <th class="num">Adapted WER</th>
+                    <th class="num">Δ WER [95% interval]</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <p class="caption">
+              Recording groups are weighted equally; intervals resample within recording groups.
+              Session groups need not represent distinct speakers, and no matched microphone-side
+              ATCO2 targets exist.
+            </p>
+          </div>
+
+          <div class="card" id="explore" style="margin-top: 22px">
+            <h3>Results by controller</h3>
+            <div id="panel-ctrl">
+              <div class="controls">
+                <label for="ctrl-metric">Measure</label>
+                <select class="select" id="ctrl-metric">
+                  <option value="wer">Whisper-ATC WER (%)</option>
+                  <option value="speaker_cosine_to_genuine">
+                    Speaker cosine to genuine target
+                  </option>
+                  <option value="absolute_log_duration_error">Log-duration error</option>
+                  <option value="utmosv2_predicted_mos">UTMOSv2 predicted naturalness</option>
+                  <option value="duration_seconds">Mean output duration (s)</option>
+                </select>
+                <span style="color: var(--muted); font-size: 0.85rem"
+                  >Primary panel, 6-s limit. Each dot is an equal-weighted message mean for that
+                  controller.</span
+                >
+              </div>
+              <div class="chart" id="chart-controllers"></div>
+              <div class="legend">
+                <span class="key"><span class="sw dot genuine"></span> genuine recording</span
+                ><span class="key"><span class="sw dot base"></span> base synthesis</span
+                ><span class="key"><span class="sw dot adapted"></span> adapted synthesis</span>
+              </div>
+              <p class="caption">
+                Controller IDs are ATCOSIM speaker codes. Message counts per controller range from
+                20 to 50, and the paper’s intervals condition on these fixed controllers. Genuine
+                WER is the recognizer’s error on the recorded speech itself.
+              </p>
+            </div>
+          </div>
+
+          <div class="two-col" style="margin-top: 22px">
+            <div class="card">
+              <h3>Security implications</h3>
+              <div class="prose">
+                <p>
+                  The earlier ICNS 2026 study by the same authors reported 3.9% mean WER and 0.726
+                  mean speaker cosine across 1,000 ATCOSIM utterances with pretrained Chatterbox.
+                  Its Whisper large-v2 recognizer was fine-tuned on ATCO2 and ATCOSIM, whereas the
+                  large-v3 variant used here was fine-tuned on ATCO2, so the WER values are not
+                  directly comparable. It also found weak pitch-contour matching and measurable
+                  cadence deviations.
+                </p>
+                <p>
+                  The two studies show that pretrained synthesis can condition speech on public
+                  controller recordings. The tested adaptation offers no confirmed overall
+                  advantage, even though some short-reference cosine scores improve. Familiar
+                  phraseology and voice resemblance could lend credibility to a spoofed instruction,
+                  but the operational outcome depends on the context and defenses in the threat
+                  model.
+                </p>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Limitations and future work</h3>
+              <ul class="tight">
+                <li>
+                  Intervals condition on the tested controllers, references, trained models and
+                  generation draws; shared training data and sessions limit population
+                  generalization.
+                </li>
+                <li>
+                  Model and recognizer pretraining exposure is incompletely known. Isolating
+                  register effects requires matched non-ATC training controls.
+                </li>
+                <li>
+                  WER weights all errors equally, although phraseology-consistent omissions differ
+                  operationally from incorrect numerical repetitions. Command understanding needs
+                  evaluation beyond WER.
+                </li>
+                <li>
+                  UTMOSv2 and SCOREQ are prediction models, not listener ratings; no listening or
+                  simulator study was run.
+                </li>
+                <li>
+                  Future work: combine speech analysis and instruction extraction with trusted
+                  clearance records, surveillance data and geographic constraints; run listening and
+                  simulator studies comparing genuine, base and adapted speech for
+                  unauthorized-instruction detection, false alarms, comprehension and correction
+                  timing, including unmodified public models.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <div>
+          <strong style="color: #fff"
+            >Air Traffic Control Speech Synthesis with Model Fine-Tuning and Its Security
+            Implications</strong
+          >
+          · Dao Vu and Peng Wei · George Washington University
+        </div>
+        <div>
+          Audio on this page is for listening only and is not distributed for reuse. Synthesized
+          outputs retain the model’s watermark. The study did not test pilot acceptance or
+          operational spoofing success.
+        </div>
+      </div>
+    </footer>
+
+    <script src="data/site-data.js"></script>
+    <script src="assets/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Overview | ATC Speech Synthesis and Security</title>
+    <meta
+      name="description"
+      content="Audio and results for Air Traffic Control Speech Synthesis with Model Fine-Tuning and Its Security Implications, by Dao Vu and Peng Wei."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/site.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%237a5a48'/%3E%3Cpath d='M6 17h3l2-6 3 12 3-10 2 6 2-3h5' fill='none' stroke='%23fbeaec' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+    <script>
+      (function () {
+        const pages = {
+          threat: "threat.html",
+          design: "design.html",
+          "chart-ckpt-dur": "design.html",
+          "chart-ckpt-wer": "design.html",
+          "chart-loss": "design.html",
+          listen: "listen.html",
+          "sample-select": "listen.html",
+          "sample-previous": "listen.html",
+          "sample-next": "listen.html",
+          "listen-count": "listen.html",
+          "listen-status": "listen.html",
+          "strip-list": "listen.html",
+          "listen-note": "listen.html",
+          findings: "findings.html",
+          primary: "findings.html",
+          "tbl-primary": "findings.html",
+          "reference-length": "findings.html",
+          "chart-reflen-cos": "findings.html",
+          "chart-reflen-wer": "findings.html",
+          "chart-refchg-cos": "findings.html",
+          "chart-refchg-wer": "findings.html",
+          "tbl-reflen": "findings.html",
+          timing: "findings.html",
+          "chart-timing": "findings.html",
+          "speaker-context": "findings.html",
+          "chart-speaker-strips": "findings.html",
+          "chart-speaker-ctrl": "findings.html",
+          radio: "findings.html",
+          "tbl-radio": "findings.html",
+          explore: "findings.html",
+          "panel-ctrl": "findings.html",
+          "ctrl-metric": "findings.html",
+          "chart-controllers": "findings.html",
+
+          references: "references.html",
+        };
+        const section = location.hash.slice(1);
+        if (pages[section]) location.replace(pages[section] + location.hash);
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#top">Skip to content</a>
+
+    <header class="topbar">
+      <div class="wrap">
+        <a class="brand" href="index.html" aria-label="Home">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="9" fill="#7a5a48" />
+            <path
+              d="M6 17h3l2-6 3 12 3-10 2 6 2-3h5"
+              fill="none"
+              stroke="#fbeaec"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span>ATC TTS &amp; Security </span>
+        </a>
+        <nav class="nav" aria-label="Sections">
+          <a href="index.html" class="active" aria-current="page">Overview</a>
+          <a href="threat.html">Threat Model</a>
+          <a href="design.html">Study design</a>
+          <a href="listen.html">Listen</a>
+          <a href="findings.html">Findings</a>
+
+          <a href="references.html">References</a>
+          <button class="pdf" type="button" data-paper-status aria-haspopup="dialog">
+            Paper PDF
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top" tabindex="-1">
+      <section class="hero">
+        <div class="wrap">
+          <div class="eyebrow">
+            <span class="dot" aria-hidden="true"></span> ICASSP 2027 Manuscript · Audio Companion
+          </div>
+          <h1>
+            <span>Air Traffic Control Speech Synthesis</span>
+            <span>with Model Fine-Tuning</span>
+            <span>and Its Security Implications</span>
+          </h1>
+
+          <p class="authors">Dao Vu and Peng Wei</p>
+          <div class="author-affiliation">
+            <p class="department">Department of Mechanical and Aerospace Engineering</p>
+            <p class="organization">George Washington University</p>
+            <p class="location">Washington, D.C., USA</p>
+            <p class="emails">
+              <a href="mailto:dao.vu@gwu.edu">dao.vu@gwu.edu</a><span aria-hidden="true"> · </span
+              ><a href="mailto:pwei@gwu.edu">pwei@gwu.edu</a>
+            </p>
+          </div>
+          <p class="lede">
+            We study controller-voice synthesis from brief audio references and test whether
+            fine-tuning on other controllers improves the result. The security question concerns ATC
+            voice links, where a transmission carries no cryptographic proof of its source.
+          </p>
+          <div class="stats" role="list" aria-label="Headline numbers">
+            <div class="stat" role="listitem">
+              <div class="label">Primary panel</div>
+              <div class="value">270 messages</div>
+              <div class="sub">9 ATCOSIM controllers · 6-s reference limit</div>
+            </div>
+            <div class="stat" role="listitem">
+              <div class="label">Base model, 2-s references</div>
+              <div class="value">14.28% WER</div>
+              <div class="sub">matched 90-message panel · speaker cosine 0.499</div>
+            </div>
+            <div class="stat" role="listitem">
+              <div class="label">Joint duration + WER criterion</div>
+              <div class="value">Not met</div>
+              <div class="sub">ΔWER +0.684 pp, upper bound 1.41 pp &gt; 1-pp tolerance</div>
+            </div>
+            <div class="stat" role="listitem">
+              <div class="label">Adaptation at 2-s references</div>
+              <div class="value">+0.0139 cosine</div>
+              <div class="sub">95% interval [0.0070, 0.0212] · still below base at 6 s</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="block" id="abstract" aria-labelledby="abstract-title">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="kicker">00</span>
+            <h2 id="abstract-title">Abstract</h2>
+          </div>
+          <div class="prose">
+            <p>
+              Analog very high frequency (VHF) voice links in air traffic control (ATC) lack
+              cryptographic source authentication. Public text-to-speech models can generate
+              controller-conditioned speech for potential unauthorized instructions. We compare
+              pretrained Chatterbox with versions fine-tuned on recordings from other controllers.
+              Across 270 messages from 9 controllers at the 6-s reference limit, adaptation changes
+              log-duration error by −0.0017 and word error rate (WER) by +0.684 percentage points,
+              without confirming improved duration matching within a 1-percentage-point WER
+              tolerance. On 90 matched messages, base synthesis yields 14.28% WER with 2-s
+              references. Fine-tuning increases speaker-embedding similarity at 2- and 4-s limits,
+              without confirmed improvement at 6 s. Predicted naturalness declines, and pitch-slope
+              error increases on its measured subset. Public pretrained models already provide
+              controller-voice conditioning, lowering the technical barrier to hypothetical voice
+              spoofing. The tested adaptation establishes no consistent advantage.
+            </p>
+            <p>
+              <strong>Index terms:</strong> air traffic control, aviation security, text-to-speech
+              synthesis, speaker similarity, domain adaptation.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="block" id="overview">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="kicker">01 · Overview</span>
+            <h2>Brief recap</h2>
+          </div>
+          <section class="recap-section prose" aria-labelledby="prior-study-title">
+            <h3 id="prior-study-title">Prior study · ICNS 2026</h3>
+            <p>
+              Our prior ICNS paper provides the baseline for this ICASSP study. It evaluated
+              pretrained Chatterbox on 1,000 ATCOSIM controller utterances, measuring word recovery,
+              speaker resemblance, and delivery. Mean word error rate was 3.9%, and mean
+              speaker-embedding cosine similarity was 0.726. Pitch contours, speaking rate, and
+              pauses were less consistently reproduced than the words.
+              <a href="https://ieeexplore.ieee.org/document/11570606">Vu and Wei, ICNS 2026</a>.
+            </p>
+            <p>
+              Building on that baseline, this ICASSP study tests whether fine-tuning improves
+              controller speech synthesis when only brief reference audio is available. It uses
+              matched base-model outputs as the experimental baseline, so scores from the two papers
+              should not be treated as a direct before-and-after comparison.
+            </p>
+          </section>
+          <section class="recap-section" aria-labelledby="tldr-title">
+            <div class="section-head">
+              <h3 id="tldr-title">TL;DR</h3>
+              <p class="intro">
+                Base and adapted models receive the same message, reference audio, and generation
+                seed. The comparison measures how fine-tuning changes word recovery, voice
+                resemblance, and delivery.
+                <button class="text-button" type="button" data-paper-status aria-haspopup="dialog">
+                  Results are reported in the manuscript.
+                </button>
+              </p>
+            </div>
+            <div class="grid grid-4">
+              <article class="card finding" style="border-left-color: var(--base)">
+                <div class="num">FINDING 1</div>
+                <h4>Pretrained synthesis with brief references</h4>
+                <div class="value">14.28%<small>WER, 2-s references</small></div>
+                <p>
+                  On the matched 90-message panel, unchanged pretrained Chatterbox reaches 14.28%,
+                  14.54% and 14.80% word error rate with 2-, 4- and 6-s reference limits. Mean
+                  speaker cosine rises with reference length: 0.499, 0.556, 0.581.
+                </p>
+              </article>
+              <article class="card finding" style="border-left-color: var(--adapted)">
+                <div class="num">FINDING 2</div>
+                <h4>Fine-tuning did not meet the joint criterion</h4>
+                <div class="value">+0.684 pp<small>ΔWER at 6 s</small></div>
+                <p>
+                  Across 270 messages, adaptation changes log-duration error by −0.0017 [−0.0149,
+                  0.0123] and WER by +0.684 percentage points [−0.001, 1.410]. Both intervals
+                  include zero, and the WER upper bound exceeds the 1-pp tolerance. The intervals
+                  also do not establish equivalence.
+                </p>
+              </article>
+              <article class="card finding" style="border-left-color: var(--genuine)">
+                <div class="num">FINDING 3</div>
+                <h4>Short-reference gains came with tradeoffs</h4>
+                <div class="value">+0.0139<small>cosine at 2 s</small></div>
+                <p>
+                  Adaptation raises mean speaker cosine by 0.0139 at 2 s and 0.0098 at 4 s, with
+                  intervals excluding zero. Adapted scores still stay below base synthesis with 6-s
+                  references. At 2 s, WER rises 1.488 pp and log-duration error rises 0.022.
+                </p>
+              </article>
+              <article class="card finding" style="border-left-color: var(--sage)">
+                <div class="num">FINDING 4</div>
+                <h4>Uneven changes in delivery</h4>
+                <div class="value">−0.062<small>UTMOSv2</small></div>
+                <p>
+                  Mean output duration falls from 4.408 to 4.030 s. Excess duration decreases, while
+                  shortfall increases. Pause-fraction error fell mainly for targets without detected
+                  pauses. Pitch-slope error rose by 0.371 semitones per utterance on the 162-message
+                  subset with pitch support.
+                </p>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <div>
+          <strong style="color: #fff"
+            >Air Traffic Control Speech Synthesis with Model Fine-Tuning and Its Security
+            Implications</strong
+          >
+          · Dao Vu and Peng Wei · George Washington University
+        </div>
+        <div>
+          Audio on this page is for listening only and is not distributed for reuse. Synthesized
+          outputs retain the model’s watermark. The study did not test pilot acceptance or
+          operational spoofing success.
+        </div>
+      </div>
+    </footer>
+
+    <script src="data/site-data.js"></script>
+    <script src="assets/site.js"></script>
+  </body>
+</html>
