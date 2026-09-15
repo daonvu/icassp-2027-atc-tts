@@ -640,6 +640,15 @@
         noteBox.appendChild(p);
       });
     }
+    const header = $(".topbar");
+    const updateHeaderHeight = () => {
+      document.documentElement.style.setProperty(
+        "--listen-header-height",
+        header.getBoundingClientRect().height + "px"
+      );
+    };
+    new ResizeObserver(updateHeaderHeight).observe(header);
+    updateHeaderHeight();
     const total = examples.length;
     const select = $("#sample-select");
     select.replaceChildren(
@@ -671,48 +680,57 @@
         "aria-labelledby": "clip-title-" + ex.rank,
       });
       strip.appendChild(
-        el("div", { class: "strip-head" }, [
-          el("div", { class: "strip-rank" }, [
-            el("span", { class: "r", text: String(ex.rank).padStart(2, "0") }),
-            el("span", { class: "of", text: "OF " + total }),
-          ]),
-          el("div", { class: "strip-fields" }, [
-            field("Controller", ex.controller, "message " + ex.messageId),
-            field("Reference limit", ex.referenceLimit, "crop " + ex.referenceCrop),
-            field("Comparison", "Base vs. adapted", "same text, reference, and generation seed"),
-          ]),
+        el("header", { class: "sample-heading" }, [
+          el("h2", { id: "clip-title-" + ex.rank, text: "Sample " + ex.rank }),
+          el("p", { text: "Controller " + ex.controller + " · " + ex.messageId }),
         ])
       );
       const body = el("div", { class: "paired-body" });
-      body.appendChild(
+      const message = el("section", {
+        class: "message-panel",
+        "aria-label": "Message and transcript",
+      });
+      message.appendChild(
         el("p", { class: "transcript" }, [
           el("span", { class: "q", text: "Inference text" }),
-          el("span", { id: "clip-title-" + ex.rank, text: "“" + ex.text + "”" }),
+          el("span", { text: ex.text }),
         ])
       );
-      if (g.hypothesis)
-        renderDiff(body, ex.synthesized.expected, g.hypothesis, "Original recognizer transcript");
+      if (g.hypothesis) {
+        const differences = renderDiff(
+          message,
+          ex.synthesized.expected,
+          g.hypothesis,
+          "Original recognizer transcript"
+        );
+        if (differences.some((word) => word[0] !== "eq"))
+          message.appendChild(
+            el("p", {
+              class: "transcript-note",
+              text: "Highlights show recognizer differences. Struck-through words were not recovered as written.",
+            })
+          );
+      }
+      body.appendChild(message);
       const pl = el("div", { class: "players" });
       const pR = makePlayer({
         src: r.src,
         arm: "reference",
         name: "Reference audio",
-        sub: ex.referenceSourceId + " crop",
+        sub: ex.referenceCrop + " excerpt · " + ex.referenceLimit + " limit",
         durationSeconds: r.durationSeconds,
       });
       const pG = makePlayer({
         src: g.src,
         arm: "genuine",
         name: "Original",
-        sub: ex.messageId,
+        sub: "Recorded controller speech",
         durationSeconds: g.durationSeconds,
       });
-      pl.appendChild(pR.wrap);
-      const comparison = el("div", { class: "comparison-grid" });
       const models = [
         Object.assign({}, ex, { approved: true }),
         Object.assign({}, ex.comparison, { approved: false }),
-      ].sort((a, b) => (a.model === b.model ? 0 : a.model === "base" ? -1 : 1));
+      ].sort((a, b) => (a.model === b.model ? 0 : a.model === "adapted" ? -1 : 1));
       const synthPlayers = [];
       models.forEach((model) => {
         const label = model.model === "base" ? "Base model" : "Adapted model";
@@ -735,10 +753,7 @@
         column.appendChild(
           el("p", {
             class: "caption",
-            text:
-              model.model === "base"
-                ? "Pretrained Chatterbox"
-                : "33-update LoRA, target controller excluded",
+            text: model.model === "base" ? "Pretrained Chatterbox" : "Fine-tuned Chatterbox",
           })
         );
         const player = makePlayer({
@@ -750,14 +765,12 @@
         synthPlayers.push(player);
         column.appendChild(player.wrap);
         const duration = metric("Duration", fmt.num(audio.durationSeconds, 2) + " s", "");
-        column.appendChild(
-          el("div", { class: "comparison-metrics" }, [
-            metric("Speaker cosine", fmt.num(model.cosine, 3), "to original"),
-            metric("Recognizer WER", fmt.num(model.wer * 100, 1) + "%", "Whisper-ATC"),
-            duration,
-            metric("UTMOSv2", fmt.num(audio.utmos, 2), "predicted naturalness"),
-          ])
-        );
+        const measurements = el("div", { class: "comparison-metrics" }, [
+          metric("Speaker cosine", fmt.num(model.cosine, 3), "to original"),
+          metric("Recognizer WER", fmt.num(model.wer * 100, 1) + "%", "Whisper-ATC"),
+          duration,
+          metric("UTMOSv2", fmt.num(audio.utmos, 2), "predicted naturalness"),
+        ]);
         player.wrap.addEventListener("durationknown", () => {
           duration.querySelector(".v").firstChild.textContent =
             fmt.num(player.audio.duration, 2) + " s";
@@ -766,7 +779,14 @@
           el("summary", { text: label + " details" }),
         ]);
         const inner = el("div", { class: "inner" });
+        inner.appendChild(measurements);
         const provenance = [
+          [
+            "Model",
+            model.model === "base"
+              ? "Pretrained Chatterbox"
+              : "33-update LoRA, target controller excluded",
+          ],
           ["Clip ID", audio.clipId],
           ["Panel", audio.panel],
         ];
@@ -785,10 +805,15 @@
           );
         detail.appendChild(inner);
         column.appendChild(detail);
-        comparison.appendChild(column);
+        pl.appendChild(column);
       });
-      pl.appendChild(comparison);
-      pl.appendChild(pG.wrap);
+      pl.appendChild(
+        el(
+          "section",
+          { class: "recording-panel", "aria-label": "Reference and original recordings" },
+          [pR.wrap, pG.wrap]
+        )
+      );
       body.appendChild(pl);
       const ab = el("div", { class: "ab" });
       const allButton = el("button", {
@@ -802,7 +827,7 @@
           return;
         }
         stopPlayback();
-        const queue = [pR, ...synthPlayers, pG];
+        const queue = [...synthPlayers, pR, pG];
         let index = 0;
         const advance = () => {
           if (++index < queue.length) {
@@ -822,9 +847,9 @@
       });
       ab.append(
         allButton,
-        el("span", { class: "caption", text: "Reference → Base → Adapted → Original" })
+        el("span", { class: "caption", text: "Adapted → Base → Reference → Original" })
       );
-      body.appendChild(ab);
+      body.insertBefore(ab, pl);
       strip.appendChild(body);
       const controller = ex.referenceSourceId.split("_")[0];
       const more = el("section", {
@@ -883,16 +908,6 @@
       strip.appendChild(more);
       list.appendChild(strip);
       showRecordings();
-    }
-    function field(k, v, sub) {
-      const f = el("div", { class: "field" });
-      f.appendChild(el("div", { class: "k", text: k }));
-      const vv = el("div", { class: "v" });
-      if (typeof v === "string") vv.appendChild(document.createTextNode(v));
-      else vv.appendChild(v);
-      if (sub) vv.appendChild(el("small", { text: " " + sub }));
-      f.appendChild(vv);
-      return f;
     }
     function metric(k, v, sub) {
       return el("div", { class: "metric" }, [
